@@ -17,6 +17,8 @@ externalDocs:
 tags:
   - name: Application
     description: API for services related application management.
+  - name: Interview
+    description: API for services related to interview management.
 
 paths:
   /applications:
@@ -69,13 +71,34 @@ paths:
         '202':
           description: Application rejection was accepted and state transition was successful.
 
+
   /interviews:
+    get:
+      operationId: getInterviews
+      tags:
+        - Interview
+      summary: Queries all interviews.
+      description: Selects all interviews stored in database and returns them as an array.
+      responses:
+        '200':
+          description: Successful query returns an array of interviews.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Interview'
+  /interviews/{interviewType}/{interviewerName}/{interviewTime}:
     post:
       operationId: scheduleInterview
       tags:
-        - Application
+        - Interview
       summary: Schedules a new interview.
       description: Submits a new interview and changes the application state to interview.
+      parameters:
+        - $ref: '#/components/parameters/InterviewType'
+        - $ref: '#/components/parameters/InterviewerName'
+        - $ref: '#/components/parameters/InterviewTime'
       requestBody:
         description: New interview information.
         required: true
@@ -90,6 +113,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Interview'
+
+  /interviews/{applicationId}:
+    get:
+      operationId: getInterview
+      tags:
+        - Interview
+      summary: Queries interviews linked with application.
+      description: Selects all interviews that have an application linked to it with the given Id.
+      parameters:
+        - $ref: '#/components/parameters/ApplicationId'
+      responses:
+        '200':
+          description: Successful query returns an array of interviews.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Interview'
 
 components:
   schemas:
@@ -164,3 +206,25 @@ components:
       required: true
       schema:
         type: integer
+    InterviewType:
+      name: interviewType
+      in: path
+      description: Type of interview to schedule
+      required: true
+      schema:
+        $ref: '#/components/schemas/InterviewType'
+    InterviewerName:
+      name: interviewerName
+      in: path
+      description: Interviewer name
+      required: true
+      schema:
+        type: string
+    InterviewTime:
+      name: interviewTime
+      in: path
+      description: Time interview is scheduled to take place
+      required: true
+      schema:
+        type: string
+        format: date-time
