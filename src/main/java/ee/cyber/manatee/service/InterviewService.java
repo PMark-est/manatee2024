@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -31,5 +32,9 @@ public class InterviewService {
                 .build();
 
         return interviewRepository.save(interview);
+    }
+
+    public List<Interview> getInterviews(){
+        return interviewRepository.findAll();
     }
 }
