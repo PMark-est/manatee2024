@@ -1,6 +1,8 @@
 package ee.cyber.manatee.statemachine;
 
 
+import ee.cyber.manatee.repository.InterviewRepository;
+import ee.cyber.manatee.service.InterviewService;
 import jakarta.transaction.Transactional;
 
 import lombok.val;
@@ -13,8 +15,7 @@ import ee.cyber.manatee.model.Candidate;
 import ee.cyber.manatee.repository.ApplicationRepository;
 import ee.cyber.manatee.service.ApplicationService;
 
-import static ee.cyber.manatee.statemachine.ApplicationState.REJECTED;
-import static ee.cyber.manatee.statemachine.ApplicationState.NEW;
+import static ee.cyber.manatee.statemachine.ApplicationState.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -31,6 +32,12 @@ public class ApplicationStateMachineTests {
 
     @Autowired
     ApplicationRepository applicationRepository;
+
+    @Autowired
+    InterviewService interviewService;
+
+    @Autowired
+    InterviewRepository interviewRepository;
 
     @Test
     @Transactional
@@ -52,5 +59,50 @@ public class ApplicationStateMachineTests {
         assertEquals(REJECTED, rejectedApplication.getApplicationState());
         assertNotEquals(initialUpdatedOn, rejectedApplication.getUpdatedOn());
 
+    }
+
+    @Test
+    @Transactional
+    public void interviewGotScheduled(){
+        val newCandidate = Candidate.builder().firstName("Mari").lastName("Maasikas").build();
+        val newApplication = Application.builder().candidate(newCandidate).build();
+
+        val applicationSaved = applicationService.insertApplication(newApplication);
+        val interviewSaved = interviewService.scheduleInterview(applicationSaved);
+
+        val stateMachine = applicationStateMachine.scheduleInterview(interviewSaved.getApplication().getId());
+        assertEquals(INTERVIEW, stateMachine.getState().getId());
+
+        val optionalInterview = interviewRepository.findById(interviewSaved.getId());
+        assertFalse(optionalInterview.isEmpty());
+    }
+
+    @Test
+    @Transactional
+    public void scheduleInterviewChangedApplicationState(){
+        val newCandidate = Candidate.builder().firstName("Mari").lastName("Maasikas").build();
+        val newApplication = Application.builder().candidate(newCandidate).build();
+
+        val applicationSaved = applicationService.insertApplication(newApplication);
+        val interviewSaved = interviewService.scheduleInterview(applicationSaved);
+
+        val optionalInterview = interviewRepository.findById(interviewSaved.getId());
+        assertFalse(optionalInterview.isEmpty());
+
+        val interviewApplication = optionalInterview.get().getApplication();
+        assertEquals(INTERVIEW, interviewApplication.getApplicationState());
+    }
+
+    @Test
+    @Transactional
+    public void rejectInterviewedCandidate(){
+        val newCandidate = Candidate.builder().firstName("Mari").lastName("Maasikas").build();
+        val newApplication = Application.builder().candidate(newCandidate).build();
+
+        val applicationSaved = applicationService.insertApplication(newApplication);
+        val interviewSaved = interviewService.scheduleInterview(applicationSaved);
+
+        val stateMachine = applicationStateMachine.rejectApplication(interviewSaved.getApplication().getId());
+        assertEquals(REJECTED, stateMachine.getState().getId());
     }
 }
