@@ -55,6 +55,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Application'
+
   /applications/{applicationId}:
     patch:
       operationId: rejectApplication
@@ -67,6 +68,28 @@ paths:
       responses:
         '202':
           description: Application rejection was accepted and state transition was successful.
+
+  /interviews:
+    post:
+      operationId: scheduleInterview
+      tags:
+        - Application
+      summary: Schedules a new interview.
+      description: Submits a new interview and changes the application state to interview.
+      requestBody:
+        description: New interview information.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Interview'
+      responses:
+        '201':
+          description: Successfully submitted interview returns an instance with given id.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Interview'
 
 components:
   schemas:
@@ -107,6 +130,31 @@ components:
         - Pre-onboard
         - Hired
         - Rejected
+
+    InterviewType:
+      type: string
+      enum:
+        - Informal
+        - Technical
+        - Behavioural
+        - Final
+
+    Interview:
+      type: object
+      required:
+        - application
+      properties:
+        id:
+          type: integer
+        application:
+          $ref: '#/components/schemas/Application'
+        InterviewType:
+          $ref: '#/components/schemas/InterviewType'
+        interviewTime:
+          type: string
+          format: date-time
+        interviewerName:
+          type: string
 
   parameters:
     ApplicationId:
