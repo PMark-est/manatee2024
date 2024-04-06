@@ -29,10 +29,10 @@ public class ApplicationStateMachineConfig
     public void configure(StateMachineStateConfigurer<ApplicationState, ApplicationEvent> states)
             throws Exception {
         states.withStates()
-              .initial(ApplicationState.NEW)
-              .states(EnumSet.allOf(ApplicationState.class))
-              .end(ApplicationState.HIRED)
-              .end(ApplicationState.REJECTED);
+                .initial(ApplicationState.NEW)
+                .states(EnumSet.allOf(ApplicationState.class))
+                .end(ApplicationState.HIRED)
+                .end(ApplicationState.REJECTED);
     }
 
     @Override
@@ -40,27 +40,33 @@ public class ApplicationStateMachineConfig
             StateMachineTransitionConfigurer<ApplicationState, ApplicationEvent> transitions)
             throws Exception {
         transitions.withExternal()
-                   .source(ApplicationState.NEW)
-                   .target(ApplicationState.REJECTED)
-                   .event(ApplicationEvent.REJECT)
+                .source(ApplicationState.NEW)
+                .target(ApplicationState.REJECTED)
+                .event(ApplicationEvent.REJECT)
 
-                   .and()
-                   .withExternal()
-                   .source(ApplicationState.INTERVIEW)
-                   .target(ApplicationState.REJECTED)
-                   .event(ApplicationEvent.REJECT)
+                .and()
+                .withExternal()
+                .source(ApplicationState.INTERVIEW)
+                .target(ApplicationState.REJECTED)
+                .event(ApplicationEvent.REJECT)
 
-                   .and()
-                   .withExternal()
-                   .source(ApplicationState.PRE_ONBOARD)
-                   .target(ApplicationState.REJECTED)
-                   .event(ApplicationEvent.REJECT)
+                .and()
+                .withExternal()
+                .source(ApplicationState.PRE_ONBOARD)
+                .target(ApplicationState.REJECTED)
+                .event(ApplicationEvent.REJECT)
 
-                   .and()
-                   .withExternal()
-                   .source(ApplicationState.OFFER)
-                   .target(ApplicationState.REJECTED)
-                   .event(ApplicationEvent.REJECT);
+                .and()
+                .withExternal()
+                .source(ApplicationState.OFFER)
+                .target(ApplicationState.REJECTED)
+                .event(ApplicationEvent.REJECT)
+
+                .and()
+                .withExternal()
+                .source(ApplicationState.NEW)
+                .target(ApplicationState.INTERVIEW)
+                .event(ApplicationEvent.SCHEDULE);
 
     }
 

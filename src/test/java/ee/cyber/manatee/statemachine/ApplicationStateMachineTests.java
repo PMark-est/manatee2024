@@ -15,7 +15,10 @@ import ee.cyber.manatee.model.Candidate;
 import ee.cyber.manatee.repository.ApplicationRepository;
 import ee.cyber.manatee.service.ApplicationService;
 
+import java.time.OffsetDateTime;
+
 import static ee.cyber.manatee.statemachine.ApplicationState.*;
+import static ee.cyber.manatee.statemachine.InterviewType.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -68,7 +71,8 @@ public class ApplicationStateMachineTests {
         val newApplication = Application.builder().candidate(newCandidate).build();
 
         val applicationSaved = applicationService.insertApplication(newApplication);
-        val interviewSaved = interviewService.scheduleInterview(applicationSaved);
+        val interviewSaved = interviewService.scheduleInterview(applicationSaved, INFORMAL,
+                OffsetDateTime.now(), "Karl Hunt");
 
         val stateMachine = applicationStateMachine.scheduleInterview(interviewSaved.getApplication().getId());
         assertEquals(INTERVIEW, stateMachine.getState().getId());
@@ -84,7 +88,8 @@ public class ApplicationStateMachineTests {
         val newApplication = Application.builder().candidate(newCandidate).build();
 
         val applicationSaved = applicationService.insertApplication(newApplication);
-        val interviewSaved = interviewService.scheduleInterview(applicationSaved);
+        val interviewSaved = interviewService.scheduleInterview(applicationSaved, INFORMAL,
+                OffsetDateTime.now(), "Karl Hunt");
 
         val optionalInterview = interviewRepository.findById(interviewSaved.getId());
         assertFalse(optionalInterview.isEmpty());
@@ -100,7 +105,8 @@ public class ApplicationStateMachineTests {
         val newApplication = Application.builder().candidate(newCandidate).build();
 
         val applicationSaved = applicationService.insertApplication(newApplication);
-        val interviewSaved = interviewService.scheduleInterview(applicationSaved);
+        val interviewSaved = interviewService.scheduleInterview(applicationSaved, INFORMAL,
+                OffsetDateTime.now(), "Karl Hunt");
 
         val stateMachine = applicationStateMachine.rejectApplication(interviewSaved.getApplication().getId());
         assertEquals(REJECTED, stateMachine.getState().getId());

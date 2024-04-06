@@ -29,12 +29,20 @@ public class ApplicationStateMachineImpl implements ApplicationStateMachine {
 
     @Override
     @Transactional
-    public StateMachine<ApplicationState, ApplicationEvent> rejectApplication(
-            Integer applicationId) {
+    public StateMachine<ApplicationState, ApplicationEvent> rejectApplication(Integer applicationId) {
         val stateMachine = build(applicationId);
         sendEvent(applicationId, stateMachine, ApplicationEvent.REJECT);
 
         return stateMachine;
+    }
+
+    @Override
+    @Transactional
+    public StateMachine<ApplicationState, ApplicationEvent> scheduleInterview(Integer applicationId) {
+        val sstateMachine = build(applicationId);
+        sendEvent(applicationId, sstateMachine, ApplicationEvent.SCHEDULE);
+
+        return sstateMachine;
     }
 
     private void sendEvent(Integer applicationId,
@@ -61,11 +69,11 @@ public class ApplicationStateMachineImpl implements ApplicationStateMachine {
         stateMachine.stop();
 
         stateMachine.getStateMachineAccessor()
-                    .doWithAllRegions(sma -> {
-                        sma.addStateMachineInterceptor(applicationStateInterceptor);
-                        sma.resetStateMachine(new DefaultStateMachineContext<>(
-                                application.getApplicationState(), null, null, null));
-                    });
+                .doWithAllRegions(sma -> {
+                    sma.addStateMachineInterceptor(applicationStateInterceptor);
+                    sma.resetStateMachine(new DefaultStateMachineContext<>(
+                            application.getApplicationState(), null, null, null));
+                });
 
         stateMachine.start();
         return stateMachine;
