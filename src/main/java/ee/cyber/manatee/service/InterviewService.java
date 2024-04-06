@@ -37,4 +37,8 @@ public class InterviewService {
     public List<Interview> getInterviews(){
         return interviewRepository.findAll();
     }
+
+    public List<Interview> getInterview(Integer applicationId){
+        return interviewRepository.findAllByApplicationId(applicationId);
+    }
 }
