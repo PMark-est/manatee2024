@@ -1,6 +1,5 @@
 package ee.cyber.manatee.model;
 
-import ee.cyber.manatee.statemachine.ApplicationState;
 import ee.cyber.manatee.statemachine.InterviewType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

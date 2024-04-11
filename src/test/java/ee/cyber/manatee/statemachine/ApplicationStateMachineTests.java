@@ -83,7 +83,7 @@ public class ApplicationStateMachineTests {
 
     @Test
     @Transactional
-    public void scheduleInterviewChangedApplicationState(){
+    public void scheduleInterviewChangesApplicationState(){
         val newCandidate = Candidate.builder().firstName("Mari").lastName("Maasikas").build();
         val newApplication = Application.builder().candidate(newCandidate).build();
 
