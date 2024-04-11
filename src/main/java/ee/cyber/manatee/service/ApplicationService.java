@@ -2,6 +2,7 @@ package ee.cyber.manatee.service;
 
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class ApplicationService {
         application.setId(null);
         application.setApplicationState(ApplicationState.NEW);
         application.setUpdatedOn(OffsetDateTime.now());
+        application.setInterviews(new ArrayList<>());
 
         return applicationRepository.save(application);
     }

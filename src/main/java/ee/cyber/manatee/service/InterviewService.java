@@ -2,9 +2,7 @@ package ee.cyber.manatee.service;
 
 import ee.cyber.manatee.model.Application;
 import ee.cyber.manatee.model.Interview;
-import ee.cyber.manatee.repository.ApplicationRepository;
 import ee.cyber.manatee.repository.InterviewRepository;
-import ee.cyber.manatee.statemachine.ApplicationState;
 import ee.cyber.manatee.statemachine.ApplicationStateMachine;
 import ee.cyber.manatee.statemachine.InterviewType;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +29,7 @@ public class InterviewService {
                 .interviewerName(interviewerName)
                 .build();
 
+        application.addInterview(interview);
         return interviewRepository.save(interview);
     }
 

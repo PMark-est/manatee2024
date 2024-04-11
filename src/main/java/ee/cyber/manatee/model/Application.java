@@ -2,20 +2,12 @@ package ee.cyber.manatee.model;
 
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import ee.cyber.manatee.statemachine.ApplicationState;
 
@@ -38,6 +30,15 @@ public class Application {
     @NotNull
     @ManyToOne(cascade = CascadeType.ALL)
     private Candidate candidate;
+
+    @OneToMany(mappedBy = "application", cascade = CascadeType.ALL)
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
+    private List<Interview> interviews;
+
+    public void addInterview(Interview interview){
+        interviews.add(interview);
+    }
 
     @NotNull
     private OffsetDateTime updatedOn;

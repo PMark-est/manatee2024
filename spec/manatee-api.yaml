@@ -146,6 +146,10 @@ components:
           $ref: '#/components/schemas/ApplicationState'
         candidate:
           $ref: '#/components/schemas/Candidate'
+        interviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/Interview'
         updatedOn:
           type: string
           format: date-time
@@ -183,13 +187,9 @@ components:
 
     Interview:
       type: object
-      required:
-        - application
       properties:
         id:
           type: integer
-        application:
-          $ref: '#/components/schemas/Application'
         InterviewType:
           $ref: '#/components/schemas/InterviewType'
         interviewTime:
