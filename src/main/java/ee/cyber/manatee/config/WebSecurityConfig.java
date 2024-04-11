@@ -23,7 +23,8 @@ public class WebSecurityConfig {
 
         // In production, use a proper allowed source list and/or reverse proxy.
         // If you are good with CORS and decide to do Bonus Task, feel free to edit the following.
-        corsConfiguration.setAllowedOrigins(Collections.singletonList("*"));
+        corsConfiguration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+        //corsConfiguration.setAllowedOriginPatterns(Collections.singletonList("http://localhost:3000"));
         corsConfiguration.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
         corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "OPTIONS"));
         configurationSource.registerCorsConfiguration("/**", corsConfiguration);
